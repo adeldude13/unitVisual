@@ -4,47 +4,96 @@ ctx = canvas.getContext("2d");
 ctx.canvas.width = window.innerWidth-25;
 ctx.canvas.height = window.innerHeight-25;
 
-
 const width = ctx.canvas.width;
 const height = ctx.canvas.height;
+const size = (width + height) / 6.5;
 const radius = 1;
-const pixel_size = 200;
 
-ctx.fillStyle = "black";
-ctx.fillRect(0, 0, width, height);
+function clear() {
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, width, height);
+}
+
 function drawCircle() {
-	ctx.strokeStyle = "white";
-	ctx.lineWidth = 2;
 	ctx.beginPath();
-	ctx.arc(width / 2, height / 2, radius * pixel_size, 0, 2 * Math.PI);
+	ctx.arc(toCanvasX(0), toCanvasY(0), radius*size, 0, 2 * Math.PI);
 	ctx.stroke();
-		/* Y line */
+}
+
+function drawLines() {
+	var temp = ctx.strokeStyle;
+	var size_t = size - 5;
 	ctx.beginPath();
 	ctx.strokeStyle = "blue";
-	ctx.moveTo(width/2, (height/2)-radius*pixel_size);
-	ctx.lineTo(width/2, (height/2)+radius*pixel_size);
+	ctx.moveTo(toCanvasX(0), toCanvasY(0-radius* size_t ));
+	ctx.lineTo(toCanvasX(0), toCanvasY(0+radius* size_t ));
 	ctx.stroke();
-		/* X line */
 	ctx.beginPath();
 	ctx.strokeStyle = "red";
-	ctx.moveTo((width/2)-radius*pixel_size, (height/2));
-	ctx.lineTo((width/2)+radius*pixel_size, (height/2));
+	ctx.moveTo(toCanvasX(0-radius*size_t), toCanvasY(0));
+	ctx.lineTo(toCanvasX(0+radius*size_t), toCanvasY(0));
 	ctx.stroke();
-	ctx.fillStyle = "white";
-	ctx.fillRect(width/2, height/2, 1, 1);
 }
 
-function drawLine(deg) {
-	rad = deg * Math.PI / 180;
-	x = Math.cos(rad)*pixel_size;
-	y = -Math.sin(rad)*pixel_size;
-	console.log((x), " ", (y));
-	ctx.strokeStyle = "green";
+function drawLineByAngel(angel) {
+	var x = Math.cos(angel) * (size - 5);
+	var y = Math.sin(angel) * (size - 5);
+	
 	ctx.beginPath();
-	ctx.moveTo((width/2), height/2);
-	ctx.lineTo((width/2) + x, (height/2)+y);
+	ctx.strokeStyle = "green";
+	ctx.moveTo(toCanvasX(0), toCanvasY(0));
+	ctx.lineTo(toCanvasX(x), toCanvasY(y));
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.strokeStyle = "purple";
+	ctx.moveTo(toCanvasX(0), toCanvasY(0));
+	ctx.lineTo(toCanvasX(x), toCanvasY(0));
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.strokeStyle = "yellow";
+	ctx.moveTo(toCanvasX(0), toCanvasY(y));
+	ctx.lineTo(toCanvasX(0), toCanvasY(0));
 	ctx.stroke();
 }
 
-drawCircle();
-drawLine(45);
+function toCanvasX(x) {
+	var sx = (width/2) + x;
+	return sx;
+}
+
+function toCanvasY(y) {
+	var sy = (height/2) - y;
+	return sy;
+}
+
+function toWorldX(x) {
+	var cx = x - (width/2);
+	return cx;
+}
+
+function toWorldY(y) {
+	var cy = -y + (height/2);
+	return cy;
+}
+
+window.addEventListener("mousemove", function(event) {
+	var x = toWorldX(event.clientX);
+	var y = toWorldY(event.clientY);
+	var angel = Math.atan2(y, x);
+	main();
+	drawLineByAngel(angel);
+})
+
+function main() {
+	clear();
+	ctx.strokeStyle = "white";
+	ctx.lineWidth = 8;
+	drawCircle();
+	drawLines();
+	ctx.fillStyle = "white";
+	ctx.fillRect(toCanvasX(0-4), toCanvasY(0+4), 8, 8);
+}
+
+main();
