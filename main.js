@@ -51,11 +51,13 @@ function drawLineByAngel(angel) {
 	ctx.lineTo(toCanvasX(x), toCanvasY(0));
 	ctx.stroke();
 
-	ctx.beginPath();
-	ctx.strokeStyle = "yellow";
-	ctx.moveTo(toCanvasX(0), toCanvasY(y));
-	ctx.lineTo(toCanvasX(0), toCanvasY(0));
-	ctx.stroke();
+	if(y != 0) {
+		ctx.beginPath();
+		ctx.strokeStyle = "yellow";
+		ctx.moveTo(toCanvasX(x), toCanvasY(0-4));
+		ctx.lineTo(toCanvasX(x), toCanvasY(y));
+		ctx.stroke();
+	}
 }
 
 function toCanvasX(x) {
@@ -84,6 +86,11 @@ window.addEventListener("mousemove", function(event) {
 	var angel = Math.atan2(y, x);
 	main();
 	drawLineByAngel(angel);
+	ctx.font = "30px Arial";
+	ctx.fillText(`θ: ${angel}`, 10, 40);
+	ctx.fillText(`θ: ${ (angel * 180 / Math.PI) }°`, 10, 80);
+	ctx.fillText(`cos(θ): ${Math.cos(angel)}`, 10, 120);
+	ctx.fillText(`sin:(θ): ${Math.sin(angel)}`, 10, 160);
 })
 
 function main() {
